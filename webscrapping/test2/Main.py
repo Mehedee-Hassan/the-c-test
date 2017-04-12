@@ -160,7 +160,7 @@ filename  = 0
 
 spider("http://en.prothom-alo.com/"
        , "sdf"
-       , 100000
+       , 500
        , "http://en.prothom-alo.com"
        , 10000
        )
