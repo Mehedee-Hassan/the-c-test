@@ -5,13 +5,14 @@ import newspaper
 import webscrapping.test2.writeFileToDisk
 
 
-global filename
 
 newsURL = "/news/"
 
 # We are going to create a class called LinkParser that inherits some
 # methods from HTMLParser which is why it is passed into the definition
 class LinkParser(HTMLParser):
+    __filename_global = 0
+
     # This is a function that HTMLParser normally has
     # but we are adding some functionality to it
     def handle_starttag(self, tag, attrs):
@@ -78,6 +79,12 @@ class LinkParser(HTMLParser):
             return "", []
 
 
+
+
+__filename_global = 0
+
+
+
 # And finally here is our spider. It takes in an URL, a word to find,
 # and the number of pages to search through before giving up
 def spider(url, word, maxPages, domain, maxprocess, dontVisist):
@@ -117,12 +124,17 @@ def spider(url, word, maxPages, domain, maxprocess, dontVisist):
 
 
 
-                if newsURL in url:
+                if "/news/" in url:
+                    global __filename_global
 
-                    filename += 1
-                    webscrapping.test2.writeFileToDisk.writeFile(data,filename)
+                    print("here ", __filename_global)
+                    __filename_global =__filename_global+ 1
+
+                    webscrapping.test2.writeFileToDisk.writeFile(__filename_global,data,url)
 
 
+                else:
+                    print("no news")
 
                 # largest amount of links to process at a time
                 if len(pagesToVisit) < maxprocess:
@@ -156,11 +168,13 @@ def spider(url, word, maxPages, domain, maxprocess, dontVisist):
 
 
 
-filename  = 0
+
 
 spider("http://en.prothom-alo.com/"
        , "sdf"
-       , 500
+       , 500000
        , "http://en.prothom-alo.com"
        , 10000
+       ,
+       "http://en.prothom-alo.com/photos"
        )
