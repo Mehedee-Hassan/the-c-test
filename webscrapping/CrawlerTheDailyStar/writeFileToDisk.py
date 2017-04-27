@@ -4,8 +4,13 @@ import newspaper
 import threading
 from webscrapping.CrawlerEnDotProthomAlo.newspaper_lib_modify import modified_datePicker
 
+
+
+
+
 def writeInThread(__filename, contentHtml, g_url):
     print(__filename)
+    base_path = "J:/__theDailyStar"
 
     newsArticle = newspaper.Article(url="")
     newsArticle.set_html(contentHtml)
@@ -21,30 +26,52 @@ def writeInThread(__filename, contentHtml, g_url):
 
 
 
-    text = str(date_text)
+    text = str(newsArticle.publish_date)
     text = text + "\n" + (newsArticle.title)
     text = text + "\n" + (newsArticle.text)
 
 
     if "/sports/" in g_url:
-        __filename = "J:/___testdata/sports/" + str(__filename) + ".txt"
-    elif "/bangladesh/" in g_url:
-        __filename = "J:/___testdata/bangladesh/" + str(__filename) + ".txt"
-
-    elif "/international/" in g_url:
-        __filename = "J:/___testdata/international/" + str(__filename) + ".txt"
-    elif "/economy/" in g_url:
-        __filename = "J:/___testdata/economy/" + str(__filename) + ".txt"
-    elif "/entertainment/" in g_url:
-        __filename = "J:/___testdata/entertainment/" + str(__filename) + ".txt"
+        __filename = base_path+"/sports/" + str(__filename) + ".txt"
+    elif "/country/" in g_url:
+        __filename = base_path+"/country/" + str(__filename) + ".txt"
+    elif "/world/" in g_url:
+        __filename = base_path+"/world/" + str(__filename) + ".txt"
     elif "/lifestyle/" in g_url:
-        __filename = "J:/___testdata/lifestyle/" + str(__filename) + ".txt"
-    elif "/science-technology/" in g_url:
-        __filename = "J:/___testdata/science-technology/" + str(__filename) + ".txt"
-    elif "/youth/" in g_url:
-        __filename = "J:/___testdata/youth/" + str(__filename) + ".txt"
+        __filename = base_path+"/lifestyle/" + str(__filename) + ".txt"
+    elif "/science/" in g_url:
+        __filename = base_path+"/science/" + str(__filename) + ".txt"
+    elif "/health/" in g_url:
+        __filename = base_path+"/health/" + str(__filename) + ".txt"
+    elif "/arts-entertainment/" in g_url:
+        __filename = base_path+"/arts-entertainment/" + str(__filename) + ".txt"
+    elif "/business/" in g_url:
+        __filename = base_path+"/business/" + str(__filename) + ".txt"
+
+
+    elif "/frontpage/" in g_url:
+        __filename = base_path+"/frontpage/" + str(__filename) + ".txt"
+
+
+    elif "/op-ed/" in g_url:
+        __filename = base_path+"/op-ed/" + str(__filename) + ".txt"
+
+
+    elif "/bytes/" in g_url:
+        __filename = base_path+"/bytes/" + str(__filename) + ".txt"
+
+
+    elif "/backpage/" in g_url:
+        __filename = base_path+"/backpage/" + str(__filename) + ".txt"
+
+
+
+    elif "/environment/" in g_url:
+        __filename = base_path+"/environment/" + str(__filename) + ".txt"
+
+
     else:
-        __filename = "J:/___testdata/others/" + str(__filename) + ".txt"
+        __filename = base_path+ "/others/" + str(__filename) + ".txt"
 
     print(__filename)
     file = open(str(__filename), 'w')

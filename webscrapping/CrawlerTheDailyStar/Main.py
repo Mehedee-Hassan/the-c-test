@@ -4,7 +4,7 @@ from urllib import parse
 import newspaper
 import webscrapping.CrawlerTheDailyStar.writeFileToDisk
 
-
+import time
 
 newsURL = "/news/"
 
@@ -39,10 +39,10 @@ class LinkParser(HTMLParser):
                         newUrl = parse.urljoin(self.baseUrl, value)
 
                     # print("== new url ", newUrl)
-                    # And add it to our collection of links:
+                    # And add it to our collection of links_crime:
                     self.links = self.links + [newUrl]
 
-    # This is a new function that we are creating to get links
+    # This is a new function that we are creating to get links_crime
     # that our spider() function will call
     def getLinks(self, url):
         self.links = []
@@ -71,7 +71,7 @@ class LinkParser(HTMLParser):
 
             self.feed(htmlString)
 
-            # print("links =",self.links)
+            # print("links_crime =",self.links_crime)
 
             return htmlString, self.links
 
@@ -91,11 +91,11 @@ def spider(url, word, maxPages, domain, maxprocess, dontVisist):
     pagesToVisit = [url]
     numberVisited = 0
     foundWord = False
-    # The main loop. Create a LinkParser and get all the links on the page.
+    # The main loop. Create a LinkParser and get all the links_crime on the page.
     # Also search the page for the word or string
     # In our getLinks function we return the web page
     # (this is useful for searching for the word)
-    # and we return a set of links from that web page
+    # and we return a set of links_crime from that web page
     # (this is useful for where to go next)
 
     numberVisited = 0
@@ -119,24 +119,20 @@ def spider(url, word, maxPages, domain, maxprocess, dontVisist):
                 parser = LinkParser()
 
                 data, links = parser.getLinks(url)
-                # print("links=",links)
+                # print("links_crime=",links_crime)
                 # print(data)
 
 
 
-                if "/news/" in url:
-                    global __filename_global
+                global __filename_global
 
-                    print("here ", __filename_global)
-                    __filename_global =__filename_global+ 1
+                print("here ", __filename_global)
+                __filename_global =__filename_global+ 1
 
-                    webscrapping.test2.writeFileToDisk.writeFile(__filename_global,data,url)
+                webscrapping.CrawlerTheDailyStar.writeFileToDisk.writeFile(__filename_global,data,url)
 
 
-                else:
-                    print("no news")
-
-                # largest amount of links to process at a time
+                # largest amount of links_crime to process at a time
                 if len(pagesToVisit) < maxprocess:
                     pagesToVisit = pagesToVisit + links
 
@@ -159,7 +155,11 @@ def spider(url, word, maxPages, domain, maxprocess, dontVisist):
             # foundWord =False
         else:
             pagesToVisit = list(filter(lambda x: x != url, pagesToVisit))
-            pagesToVisit = list(filter(lambda x: "/gallery/" not in x, pagesToVisit))
+            pagesToVisit = list(filter(lambda x: "/photo/" not in x, pagesToVisit))
+            pagesToVisit = list(filter(lambda x: "/showbiz/" not in x, pagesToVisit))
+
+    time.sleep(1)
+
 
     if foundWord:
         print("The word", word, "was found at", url)
@@ -170,11 +170,11 @@ def spider(url, word, maxPages, domain, maxprocess, dontVisist):
 
 
 
-spider("http://en.prothom-alo.com/"
+spider("http://www.thedailystar.net/country"
        , "sdf"
        , 500000
-       , "http://en.prothom-alo.com"
-       , 10000
+       , "http://www.thedailystar.net"
+       , 50000
        ,
-       "http://en.prothom-alo.com/photos"
+       "/showbiz/"
        )
