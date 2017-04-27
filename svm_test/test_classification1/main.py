@@ -49,26 +49,20 @@ def read_from_disk_training():
         for file in files:
             path = root_path_current_dir +current_subdir+"\\"+ file
 
+
+            reader = open(str(path), "r")
+            text = reader.readlines()[1:]
+            text = ''.join(text)
+
+            # read crime training data
             if current_subdir == "crime":
 
                 # print("s = ", root.split(os.sep)[-1], "f = ", file)
-
-                reader = open(path, "r")
-
-                text = reader.readlines()[1:]
-                text = ''.join(text)
-
                 data_with_label.append((text,"crime"))
                 reader.close()
-
+            # read not crime data
             elif current_subdir == "ncrime":
                 # print("s = ", root.split(os.sep)[-1], "f = ", file)
-
-                reader = open(path, "r")
-
-                text = reader.readlines()[1:]
-                text = ''.join(text)
-
                 data_with_label.append((text,"ncrime"))
                 reader.close()
 
