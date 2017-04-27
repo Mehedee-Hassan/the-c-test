@@ -12,6 +12,7 @@ def writeInThread(__filename, contentHtml, g_url):
 
     newsArticle.parse()
 
+    __path = "J:/___testdata_c"
 
     date_text = newsArticle.publish_date
     if date_text == None:
@@ -27,24 +28,24 @@ def writeInThread(__filename, contentHtml, g_url):
 
 
     if "/sports/" in g_url:
-        __filename = "J:/___testdata/sports/" + str(__filename) + ".txt"
+        __filename = __path+"/sports/" + str(__filename) + ".txt"
     elif "/bangladesh/" in g_url:
-        __filename = "J:/___testdata/bangladesh/" + str(__filename) + ".txt"
+        __filename = __path+"/bangladesh/" + str(__filename) + ".txt"
 
     elif "/international/" in g_url:
-        __filename = "J:/___testdata/international/" + str(__filename) + ".txt"
+        __filename = __path+"/international/" + str(__filename) + ".txt"
     elif "/economy/" in g_url:
-        __filename = "J:/___testdata/economy/" + str(__filename) + ".txt"
+        __filename = __path+"/economy/" + str(__filename) + ".txt"
     elif "/entertainment/" in g_url:
-        __filename = "J:/___testdata/entertainment/" + str(__filename) + ".txt"
+        __filename = __path+"/entertainment/" + str(__filename) + ".txt"
     elif "/lifestyle/" in g_url:
-        __filename = "J:/___testdata/lifestyle/" + str(__filename) + ".txt"
+        __filename = __path+"/lifestyle/" + str(__filename) + ".txt"
     elif "/science-technology/" in g_url:
-        __filename = "J:/___testdata/science-technology/" + str(__filename) + ".txt"
+        __filename = __path+"/science-technology/" + str(__filename) + ".txt"
     elif "/youth/" in g_url:
-        __filename = "J:/___testdata/youth/" + str(__filename) + ".txt"
+        __filename = __path+"/youth/" + str(__filename) + ".txt"
     else:
-        __filename = "J:/___testdata/others/" + str(__filename) + ".txt"
+        __filename = __path+"/others/" + str(__filename) + ".txt"
 
     print(__filename)
     file = open(str(__filename), 'w')
