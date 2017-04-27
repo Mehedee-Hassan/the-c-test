@@ -10,7 +10,7 @@ class DatabloggerSpider(CrawlSpider):
     # The name of the spider
     name = "datablogger"
 
-    # The domains that are allowed (links to other domains are skipped)
+    # The domains that are allowed (links_crime to other domains are skipped)
     allowed_domains = ["data-blogger.com"]
     # allowed_domains = ["thedailystar.net"]
 
@@ -19,7 +19,7 @@ class DatabloggerSpider(CrawlSpider):
     # start_urls = ["http://www.thedailystar.net"]
 
 
-    # This spider has one rule: extract all (unique and canonicalized) links, follow them and parse them using the parse_items method
+    # This spider has one rule: extract all (unique and canonicalized) links_crime, follow them and parse them using the parse_items method
     rules = [
         Rule(
             LinkExtractor(
@@ -40,9 +40,9 @@ class DatabloggerSpider(CrawlSpider):
     def parse_items(self, response):
         # The list of items that are found on the particular page
         items = []
-        # Only extract canonicalized and unique links (with respect to the current page)
+        # Only extract canonicalized and unique links_crime (with respect to the current page)
         links = LinkExtractor(canonicalize=True, unique=True).extract_links(response)
-        # Now go through all the found links
+        # Now go through all the found links_crime
         for link in links:
             # Check whether the domain of the URL of the link is allowed; so whether it is in one of the allowed domains
             is_allowed = False
