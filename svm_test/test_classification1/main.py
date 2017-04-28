@@ -12,6 +12,8 @@ import os
 import sys
 from sklearn.feature_extraction.text import TfidfVectorizer,ENGLISH_STOP_WORDS
 
+from nltk.stem import WordNetLemmatizer
+
 def read_data(path):
     files = os.listdir(path)
 
@@ -50,7 +52,7 @@ def read_from_disk_training():
             path = root_path_current_dir +current_subdir+"\\"+ file
 
 
-            reader = open(str(path), "r")
+            reader = open(str(path), "r",encoding="latin-1")
             text = reader.readlines()[1:]
             text = ''.join(text)
 
@@ -96,7 +98,9 @@ def get_custom_stop_words():
             'gazipur',            'gopalganj',            'jamalpur',            'kishoregonj',
             'madaripur',            'manikganj',            'munshiganj',            'mymensingh',
             'narayanganj',            'narsingdi',            'netrakona',            'rajbari',
-            'shariatpur',            'sherpur',            'tangail'
+            'shariatpur',            'sherpur',            'tangail','shibganj'
+        # people / organization
+            'prothom'
             ]
 
 
@@ -115,19 +119,28 @@ def train(data_to_train):
                                  max_df = 0.8,
                                  sublinear_tf=True,
                                  use_idf =True,
+                                 lowercase=True,
                                  stop_words = set(my_stop_words))
 
 
-    x_data = [text[0] for text in data_to_train]
+    toLammatize_array= [text[0] for text in data_to_train]
+
+    wordnet_lemmatizer = WordNetLemmatizer()
+    x_data = [wordnet_lemmatizer.lemmatize(item) for item in toLammatize_array]
 
     # print (data_to_train[0])
 
+
     train_x = vectorizer.fit_transform(x_data)
+
     train_x_label = [label[1] for label in data_to_train]
 
     svmModel = sklearn.svm.SVC(kernel="linear")
 
     svmModel.fit(train_x,train_x_label)
+
+
+
 
     return svmModel,vectorizer
 
@@ -145,7 +158,7 @@ def read_test_file(model,vectorizer):
         if os.path.isfile(p1):
             print("test file = ",file)
 
-            reader = open(p1,"r")
+            reader = open(p1,"r",encoding="utf8")
 
             text = reader.read()
             test.append(text)
@@ -180,7 +193,11 @@ def download_test():
     _current_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
 
     links = [
-        "http://www.thedailystar.net/country/death-buffalos-caused-rotten-grass-sunamganj-haor-1397368"
+        # "http://www.thedailystar.net/country/death-buffalos-caused-rotten-grass-sunamganj-haor-1397368",
+        "http://www.thedailystar.net/country/2-held-nganj-over-torturing-expats-libya-1397428",
+        "http://www.thedailystar.net/frontpage/uranium-behind-deaths-haors-1394068",
+        "http://en.prothom-alo.com/bangladesh/news/146549/4-killed-in-operation-Eagle-Hunt",
+        "http://en.prothom-alo.com/bangladesh/news/146577/Over-100-000ha-of-Boro-cropland-flooded-in"
     ]
     __path = _current_dir+"\\test_data\\test_data\\"
 
@@ -203,6 +220,16 @@ def download_test():
         reader.close()
         file_name_incr+=1
 
+
+def save_model_to_disk(model_to_save,vectorizer):
+    path_model = "model/"
+    file_model = "svc-linear-cr1460ncr1035.pkl"
+    file_vect = "tfidf-vectorizer-cr1460ncr1035.pkl"
+
+    from sklearn.externals import joblib
+    joblib.dump(model_to_save,path_model+file_model)
+    joblib.dump(vectorizer ,path_model+file_vect )
+
 def Main():
 
 
@@ -212,6 +239,9 @@ def Main():
     data_as_array = read_from_disk_training()
 
     model ,vectorizer =train(data_as_array)
+
+
+    save_model_to_disk(model,vectorizer)
 
     downalod_thread = Thread(target=download_test,args=())
 
