@@ -255,8 +255,9 @@ def predict(data,model,vectorizerTfIdf,file):
     if result[0] == 'ncrime':
         non_crime_data.append(str(file))
 
-    print (result)
-
+        print ("crime related news")
+    else :
+        print ("not crime news")
 
 
 def download_test():
