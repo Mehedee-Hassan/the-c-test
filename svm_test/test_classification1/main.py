@@ -254,6 +254,8 @@ def download_test():
 
     _current_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
 
+    # links to check
+
     links = [
         # "http://www.thedailystar.net/country/death-buffalos-caused-rotten-grass-sunamganj-haor-1397368",
         # "http://www.thedailystar.net/country/2-held-nganj-over-torturing-expats-libya-1397428",
@@ -275,17 +277,24 @@ def download_test():
     file_name_incr = 0
 
     for link in links:
-        txt_title = __path+str(file_name_incr) + ".txt"
-
-        print(txt_title)
 
 
-        reader = open(txt_title,"w+",encoding='UTF8')
+
+
 
         a = newspaper.Article(link)
         a.download()
         a.parse()
 
+
+        if a.title != None:
+            txt_title = __path + a.title.strip() + ".txt"
+        else:
+            txt_title = __path + str(file_name_incr) + ".txt"
+
+
+        print(txt_title)
+        reader = open(txt_title, "w+", encoding='UTF8')
         reader.write(a.title+"\n"+a.text)
 
         reader.close()
