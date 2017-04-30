@@ -2,9 +2,13 @@ import os
 
 def main():
 
-    __path = "J:/thenewage/ncrime/all/New folder/dailystar"
+    # __path = "J:/thenewage/ncrime/all/New folder/dailystar"
+
+
+    __path = "J:/thenewage/ncrim_links"
+
     __file_extension = ".txt"
-    __fileToWrite_name = "__OneFile_on_new_line4.txt"
+    __fileToWrite_name = "__OneFile_on_new_line5.txt"
 
     files = os.listdir(__path)
 

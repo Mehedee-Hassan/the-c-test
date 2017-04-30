@@ -18,7 +18,7 @@ def readFromFile():
     allLinks = []
 
 
-    with open("dailystar/all_links_crime_dailystar.txt","r") as f:
+    with open("links_not_crime_accident","r") as f:
         for line in f:
             allLinks.append(line)
 
@@ -70,7 +70,7 @@ def spider(url):
                     __filename_global = __filename_global + 1
                     numberVisited += 1
 
-                    webscrapping.static_crawler.writeFileToDisk.writeFile(__filename_global, htmlString, url)
+                    webscrapping.static_crawler.writeFileToDisk.writeFile(contentHtml=htmlString,__filename=str(__filename_global)+"_accident",url=url)
 
             except :
                 print("failed********")

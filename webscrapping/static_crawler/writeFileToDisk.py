@@ -12,7 +12,8 @@ def writeInThread(__filename, contentHtml, g_url):
 
     newsArticle.parse()
 
-    __path = "J:/___testdata_crime_sure2"
+    # __path = "J:/___testdata_not_crime_sure4_utf8"
+    __path = "J:/___accident_not_crime_data/"
 
     date_text = newsArticle.publish_date
 
@@ -28,7 +29,7 @@ def writeInThread(__filename, contentHtml, g_url):
     __filename = __path+"/" + str(__filename) + ".txt"
 
     print(__filename)
-    file = open(str(__filename), 'w')
+    file = open(str(__filename), 'w+',encoding="UTF8")
     file.write(text)
     file.close()
     print("--done--")
@@ -38,7 +39,7 @@ def writeFile(contentHtml, __filename,url=""):
     print("===writefile===")
 
 
-    t = threading.Thread(target=writeInThread ,args=(contentHtml,__filename,url))
+    t = threading.Thread(target=writeInThread ,args=(__filename,contentHtml,url))
     t.start()
 
 

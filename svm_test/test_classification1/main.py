@@ -5,14 +5,17 @@ from html.parser import HTMLParser
 from threading import Thread
 
 import newspaper
+import nltk
 import numpy
 import sklearn.svm
 import os
 
 import sys
 from sklearn.feature_extraction.text import TfidfVectorizer,ENGLISH_STOP_WORDS
-
+from sklearn.externals import joblib
+import pickle
 from nltk.stem import WordNetLemmatizer
+import string
 
 def read_data(path):
     files = os.listdir(path)
@@ -86,7 +89,7 @@ def get_custom_stop_words():
         , 'did', 'not', 'now', 'under', 'he', 'you', 'herself', 'has', 'just', 'where', 'too', 'only'
         , 'myself', 'which', 'those', 'i', 'after'
         , 'few', 'whom', 't', 'being', 'if', 'theirs', 'my', 'against', 'a'
-        , 'by', 'doing', 'it', 'how', 'further', 'was', 'here', 'than'
+        , 'by', 'doing', 'it', 'how', 'further', 'was', 'here', 'than','the','of'
 
         # location names
         ,'Bangladesh','dhaka','bangladesh','barisal',
@@ -98,10 +101,12 @@ def get_custom_stop_words():
             'gazipur',            'gopalganj',            'jamalpur',            'kishoregonj',
             'madaripur',            'manikganj',            'munshiganj',            'mymensingh',
             'narayanganj',            'narsingdi',            'netrakona',            'rajbari',
-            'shariatpur',            'sherpur',            'tangail','shibganj'
+            'shariatpur',            'sherpur',            'tangail',   'shibganj','abdullahpur'
         # people / organization
-            'prothom'
-            ]
+            'prothom','begum','begumganj','abdul', 'abdul-jabbar',  'abdulahi','abdullah',  'abdullah-al-baki',  'abdullah-al-harun',  'abdullah-hel-baki','abdurashid',
+            'abul',
+
+        ]
 
 
 
@@ -120,18 +125,31 @@ def train(data_to_train):
                                  sublinear_tf=True,
                                  use_idf =True,
                                  lowercase=True,
-                                 stop_words = set(my_stop_words))
+                                 stop_words=my_stop_words,
+                                 # tokenizer=LemmaTokenizerFuction
+                                 )
 
 
     toLammatize_array= [text[0] for text in data_to_train]
+    #
+    # # wordnet_lemmatizer = WordNetLemmatizer()
+    # snowball_stemmer = SnowballStemmer("english")
+    #
+    #
+    # x_data_to_re_number = [snowball_stemmer.stem(item) for item in toLammatize_array]
 
-    wordnet_lemmatizer = WordNetLemmatizer()
-    x_data = [wordnet_lemmatizer.lemmatize(item) for item in toLammatize_array]
+    x_data = [re.sub('[0-9]+' ,'',item) for item in toLammatize_array]
+
+
+    # print(x_data[0])
 
     # print (data_to_train[0])
 
+    print ("here ---")
 
     train_x = vectorizer.fit_transform(x_data)
+
+    print(train_x[0].todense())
 
     train_x_label = [label[1] for label in data_to_train]
 
@@ -143,6 +161,47 @@ def train(data_to_train):
 
 
     return svmModel,vectorizer
+
+
+
+i = 0
+
+
+def StemTokenizerFuction(text):
+    tokens = nltk.word_tokenize(text)
+    stems = []
+    for item in tokens:
+        stems.append(nltk.PorterStemmer().stem(item))
+
+    global i
+    i+=1
+    if i < 10:
+        print (stems[0:20])
+
+    return stems
+
+def LemmaTokenizerFuction(text):
+    tokens = nltk.word_tokenize(text)
+    lemma = []
+    punctuation = string.punctuation
+
+
+    for item in tokens:
+
+        item = item.strip(punctuation)
+        item = nltk.WordNetLemmatizer().lemmatize(item,pos='v')
+        lemma.append(nltk.WordNetLemmatizer().lemmatize(item))
+
+
+
+    global i
+    i+=1
+    if i < 10:
+        print (lemma[0:20])
+
+    return lemma
+
+
 
 
 def read_test_file(model,vectorizer):
@@ -178,7 +237,10 @@ non_crime_data=[]
 
 def predict(data,model,vectorizerTfIdf,file):
 
+
+
     test_x = vectorizerTfIdf.transform(data)
+
     result = model.predict(test_x)
 
     if result[0] == 'ncrime':
@@ -194,10 +256,19 @@ def download_test():
 
     links = [
         # "http://www.thedailystar.net/country/death-buffalos-caused-rotten-grass-sunamganj-haor-1397368",
-        "http://www.thedailystar.net/country/2-held-nganj-over-torturing-expats-libya-1397428",
-        "http://www.thedailystar.net/frontpage/uranium-behind-deaths-haors-1394068",
-        "http://en.prothom-alo.com/bangladesh/news/146549/4-killed-in-operation-Eagle-Hunt",
-        "http://en.prothom-alo.com/bangladesh/news/146577/Over-100-000ha-of-Boro-cropland-flooded-in"
+        # "http://www.thedailystar.net/country/2-held-nganj-over-torturing-expats-libya-1397428",
+        # "http://www.thedailystar.net/frontpage/uranium-behind-deaths-haors-1394068",
+        # "http://en.prothom-alo.com/bangladesh/news/146549/4-killed-in-operation-Eagle-Hunt",
+        # "http://en.prothom-alo.com/bangladesh/news/146577/Over-100-000ha-of-Boro-cropland-flooded-in"
+        "http://www.thedailystar.net/country/bangladeshi-girl-dies-california-plane-crash-1361062",
+        "http://www.thedailystar.net/news/restricted-she-killed-parents",
+        "http://www.thedailystar.net/frontpage/3-family-burned-dead-1367344",
+        "http://archive.thedailystar.net/forum/2012/July/road.htm",
+        "http://www.thedailystar.net/backpage/7-hurt-factory-guards-open-fire-protesters-1201078",
+        "http://www.thedailystar.net/frontpage/48-feared-dead-pia-plane-crash-1326838",
+        "http://en.prothom-alo.com/bangladesh/news/146723/Meat-traders-likely-to-go-on-strike-in-Ramadan",
+        "http://en.prothom-alo.com/bangladesh/news/146721/Slums-harbouring-criminals-to-be-evicted-IGP"
+
     ]
     __path = _current_dir+"\\test_data\\test_data\\"
 
@@ -225,10 +296,15 @@ def save_model_to_disk(model_to_save,vectorizer):
     path_model = "model/"
     file_model = "svc-linear-cr1460ncr1035.pkl"
     file_vect = "tfidf-vectorizer-cr1460ncr1035.pkl"
+    file_custom_tokenizer = "stem-tokenizer-for-tfidfvect.pkl"
 
-    from sklearn.externals import joblib
+
     joblib.dump(model_to_save,path_model+file_model)
     joblib.dump(vectorizer ,path_model+file_vect )
+
+
+
+
 
 def Main():
 
