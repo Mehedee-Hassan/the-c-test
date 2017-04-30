@@ -215,16 +215,25 @@ def read_test_file(model,vectorizer):
     for file in files:
         p1 = root_path_current_dir+file
         if os.path.isfile(p1):
-            print("test file = ",file)
 
             reader = open(p1,"r",encoding="utf8")
 
             text = reader.read()
-            test.append(text)
+            # test.append(text)
+            reader.close()
 
+            reader = open(p1,"r",encoding="utf8")
+            news_title = reader.readline()
+            reader.close()
+
+            print("\n==== ====\ntest file = ",file )
+            if news_title != None:
+                print("News Title = ",news_title)
+
+
+            print("result=")
             predict([text], model, vectorizer,file)
 
-            reader.close()
 
 
     # return test
@@ -287,10 +296,7 @@ def download_test():
         a.parse()
 
 
-        if a.title != None:
-            txt_title = __path + a.title.strip() + ".txt"
-        else:
-            txt_title = __path + str(file_name_incr) + ".txt"
+        txt_title = __path + str(file_name_incr) + ".txt"
 
 
         print(txt_title)
